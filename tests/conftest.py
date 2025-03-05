@@ -1,13 +1,14 @@
 import asyncio
 import os
-from dotenv import load_dotenv, find_dotenv
 
 import allure
 import pytest
 import pytest_asyncio
-from playwright.async_api import async_playwright
+from dotenv import load_dotenv, find_dotenv
+from playwright.async_api import async_playwright, expect
 
-from pages.login_page import LoginPage
+from pages.chronos.home_page import HomePage
+from pages.chronos.login_page import LoginPage
 
 
 @pytest_asyncio.fixture()
@@ -24,7 +25,8 @@ async def page(browser):
     yield page
     await page.close()
 
-@pytest_asyncio.fixture
+
+@pytest.fixture
 async def logged_in_browser(page):
     """
     Fixture que realiza el login y retorna un navegador autenticado.
@@ -32,20 +34,21 @@ async def logged_in_browser(page):
     dotenv_path = find_dotenv()
     load_dotenv(dotenv_path)
 
-    url = os.getenv("URL_NEMESIS")
-    username = os.getenv("USER_NAME")
-    password = os.getenv("PASSWORD")
+    url = os.getenv("URL_CHRONOS")
+    username = os.getenv("USER_CHRONOS")
+    password = os.getenv("PASS_CHRONOS")
 
     if not url or not username or not password:
         raise ValueError("URL_NEMESIS, USER_NAME, y PASSWORD deben estar configurados en las variables de entorno.")
-
-    print("Voy a hacer login")
     login_page = LoginPage(page)
     await login_page.navigate(url)
     await login_page.set_username(username)
     await login_page.set_password(password)
     await login_page.click_on_login_button()
+    home_page_ = HomePage(page)
+    await expect(home_page_.logout_button).to_be_visible(timeout=80000)
     return page
+
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item):
@@ -68,6 +71,7 @@ def pytest_runtest_makereport(item):
             except Exception as e:
                 print(f"Error capturing screenshot: {e}")
 
+
 async def take_screenshot(page):
     screenshot_binary = await page.screenshot(full_page=True)
     allure.attach(
@@ -75,15 +79,3 @@ async def take_screenshot(page):
         name="screenshot_on_failure",
         attachment_type=allure.attachment_type.PNG
     )
-
-@pytest_asyncio.fixture
-async def setup_download_directory():
-    download_dir = os.path.join(os.getcwd(), "downloads", f"test_{os.getpid()}")
-    os.makedirs(download_dir, exist_ok=True)
-    yield download_dir
-    # Limpia el directorio después del test
-    for file in os.listdir(download_dir):
-        file_path = os.path.join(download_dir, file)
-        if os.path.isfile(file_path):
-            os.remove(file_path)
-    os.rmdir(download_dir)

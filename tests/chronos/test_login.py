@@ -8,7 +8,6 @@ from playwright.async_api import expect
 from pages.chronos.home_page import HomePage
 from pages.chronos.login_page import LoginPage
 
-
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
@@ -30,4 +29,9 @@ class TestLoginChronos:
         with allure.step("Se valida que estamos logueados"):
             home_page = HomePage(page)
             await expect(home_page.logout_button).to_be_visible(timeout=20000)
-
+        with allure.step("Hacemos clic en el toolbar"):
+            await home_page.click_on_toolbar_menu()
+        with allure.step("Seleccionamos la opcion reportes"):
+            await home_page.click_on_reports_option()
+        with allure.step("Seleccionados reportes Agent A/R"):
+            await home_page.click_on_agent_ar_report()
