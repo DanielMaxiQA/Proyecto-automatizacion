@@ -29,7 +29,7 @@ async def page(browser):
 @pytest.fixture
 async def logged_in_browser(page):
     """
-    Fixture que realiza el login y retorna un navegador autenticado.
+    Fixture que realiza el login y retorna un navegador autenticado y con Allure steps.
     """
     dotenv_path = find_dotenv()
     load_dotenv(dotenv_path)
@@ -39,14 +39,23 @@ async def logged_in_browser(page):
     password = os.getenv("PASS_CHRONOS")
 
     if not url or not username or not password:
-        raise ValueError("URL_NEMESIS, USER_NAME, y PASSWORD deben estar configurados en las variables de entorno.")
+        raise ValueError("USER_CHRONOS y PASS_CHRONOS deben estar configurados en las variables de entorno.")
     login_page = LoginPage(page)
-    await login_page.navigate(url)
-    await login_page.set_username(username)
-    await login_page.set_password(password)
-    await login_page.click_on_login_button()
-    home_page_ = HomePage(page)
-    await expect(home_page_.logout_button).to_be_visible(timeout=80000)
+
+    with allure.step("Abrir la aplicación"):
+        await login_page.navigate(url)
+
+    #await login_page.navigate(url)
+    with allure.step("Ingresar credenciales y hacer login"):
+        await login_page.set_username(username)
+        await login_page.set_password(password)
+        await login_page.click_on_login_button()
+
+    home_page = HomePage(page)
+
+    with allure.step("Validar que el usuario está logueado"):
+        await expect(home_page.logout_button).to_be_visible(timeout=80000)
+
     return page
 
 
