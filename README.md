@@ -73,3 +73,4 @@ playwright codegen demo.playwright.dev/todomvc
 Proyecto implementado por:
 
 **Héctor Vergara**
+**Ignacio García**
