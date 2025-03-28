@@ -1,3 +1,5 @@
+from asyncio import timeout
+
 from playwright.async_api import Page
 
 
@@ -10,7 +12,7 @@ class AgentARPage:
         self.input_begin_date = page.locator("//input[@name='BeginD']")
         self.input_end_date = page.locator("//input[@name='EndD']")
         self.view_button = page.get_by_role("button", name="View")
-        self.abrir_en_nueva_pestana_button = page.get_by_role("button", name="Abrir en nueva pestaña")
+        self.open_in_new_window_button = page.get_by_role("button", name="Abrir en nueva pestaña")
         self.loading = page.get_by_role("img")
 
     async def click_on_reports_option(self) -> None:
@@ -28,5 +30,5 @@ class AgentARPage:
     async def click_view_button(self):
         await self.view_button.click()
 
-    async def click_test(self):
-        await self.abrir_en_nueva_pestana_button.click(timeout=80000)
+    async def click_new_window(self):
+        await self.open_in_new_window_button.click(timeout=80000)

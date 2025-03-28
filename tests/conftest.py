@@ -1,11 +1,11 @@
 import asyncio
 import os
-
 import allure
 import pytest
 import pytest_asyncio
 from dotenv import load_dotenv, find_dotenv
-from playwright.async_api import async_playwright, expect
+from dotenv.main import with_warn_for_invalid_lines
+from playwright.async_api import async_playwright, expect, Page
 
 from pages.chronos.home_page import HomePage
 from pages.chronos.login_page import LoginPage
@@ -26,8 +26,9 @@ async def page(browser):
     await page.close()
 
 
-@pytest.fixture
-async def logged_in_browser(page):
+@pytest.fixture(scope="function")
+async def logged_in_browser(page: Page):
+
     """
     Fixture que realiza el login y retorna un navegador autenticado y con Allure steps.
     """
@@ -57,7 +58,6 @@ async def logged_in_browser(page):
         await expect(home_page.logout_button).to_be_visible(timeout=80000)
 
     return page
-
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item):
