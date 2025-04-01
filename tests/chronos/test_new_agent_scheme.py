@@ -7,7 +7,7 @@ import allure
 import pytest
 from playwright.async_api import expect
 
-from pages.chronos.new_agent_scheme_page import AgentSchemePage
+from pages.chronos.new_agent_scheme_page import NewAgentSchemePage
 from pages.chronos.home_page import HomePage
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from take_screen import take_screenshot
@@ -17,9 +17,9 @@ class TestAgentScheme:
     @allure.story('New Agent Scheme')
     @pytest.mark.asyncio
 
-    async def test_agent_scheme(self, logged_in_browser, page):
+    async def test_new_agent_scheme(self, logged_in_browser, page):
         home_page = HomePage(logged_in_browser)
-        agent_scheme_page = AgentSchemePage(logged_in_browser)
+        agent_scheme_page = NewAgentSchemePage(logged_in_browser)
 
         with allure.step("Hacer clic en el toolbar"):
             await home_page.click_on_toolbar_menu()
@@ -34,7 +34,7 @@ class TestAgentScheme:
             await take_screenshot(page, "Búsqueda de agencia")
         with allure.step("Buscar Agencia"):
             await agent_scheme_page.set_search_agent("18067")
-            time.sleep(2)
+            time.sleep(4)
             expect(agent_scheme_page.option_agent_select).to_be_visible(timeout=80000)
             #time.sleep(2)
             await agent_scheme_page.click_on_agent_select()

@@ -4,7 +4,7 @@ from asyncio import timeout
 from playwright.async_api import Page, expect
 
 
-class AgentSchemePage:
+class NewAgentSchemePage:
 
     def __init__(self, page: Page):
         self.page = page

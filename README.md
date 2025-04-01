@@ -57,7 +57,7 @@ pytest tests/{Nombre del archivo de pruebas}/ --alluredir=reports/allure-results
 ```
 
 ## Abrir los reportes
-Despues de que se ejecuten las pruebas con alguno de los comandos que generan repotes, se ejecuta el siguiente comando para que se cargue el reporte en formato HTML.
+Despues de que se ejecuten las pruebas con alguno de los comandos que generan reportes, se ejecuta el siguiente comando para que se cargue el reporte en formato HTML.
 ```bash
 allure serve reports/allure-results 
 ```
